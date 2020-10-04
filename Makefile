@@ -14,6 +14,9 @@ all: sl
 sl: sl.c sl.h
 	$(CC) $(CFLAGS) -o sl sl.c -lncurses
 
+static: sl.c sl.h
+	$(CC) $(CFLAGS) -o goheels sl.c -static -lncurses -ltermcap
+
 clean:
 	rm -f sl
 

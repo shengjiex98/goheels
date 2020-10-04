@@ -44,17 +44,8 @@
 #include "sl.h"
 
 void add_smoke(int y, int x);
-void add_man(int y, int x);
-int add_C51(int x);
 int add_D51(int x);
-int add_sl(int x);
-void option(char *str);
 int my_mvaddstr(int y, int x, char *str);
-
-int ACCIDENT  = 0;
-int LOGO      = 0;
-int FLY       = 0;
-int C51       = 0;
 
 int my_mvaddstr(int y, int x, char *str)
 {
@@ -65,30 +56,10 @@ int my_mvaddstr(int y, int x, char *str)
     return OK;
 }
 
-void option(char *str)
-{
-    extern int ACCIDENT, LOGO, FLY, C51;
-
-    while (*str != '\0') {
-        switch (*str++) {
-            case 'a': ACCIDENT = 1; break;
-            case 'F': FLY      = 1; break;
-            case 'l': LOGO     = 1; break;
-            case 'c': C51      = 1; break;
-            default:                break;
-        }
-    }
-}
-
 int main(int argc, char *argv[])
 {
-    int x, i;
+    int x;
 
-    for (i = 1; i < argc; ++i) {
-        if (*argv[i] == '-') {
-            option(argv[i] + 1);
-        }
-    }
     initscr();
     signal(SIGINT, SIG_IGN);
     noecho();
@@ -98,15 +69,7 @@ int main(int argc, char *argv[])
     scrollok(stdscr, FALSE);
 
     for (x = COLS - 1; ; --x) {
-        if (LOGO == 1) {
-            if (add_sl(x) == ERR) break;
-        }
-        else if (C51 == 1) {
-            if (add_C51(x) == ERR) break;
-        }
-        else {
-            if (add_D51(x) == ERR) break;
-        }
+        if (add_D51(x) == ERR) break;
         getch();
         refresh();
         usleep(40000);
@@ -116,48 +79,6 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-int add_sl(int x)
-{
-    static char *sl[LOGOPATTERNS][LOGOHEIGHT + 1]
-        = {{LOGO1, LOGO2, LOGO3, LOGO4, LWHL11, LWHL12, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL21, LWHL22, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL31, LWHL32, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL41, LWHL42, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL51, LWHL52, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL61, LWHL62, DELLN}};
-
-    static char *coal[LOGOHEIGHT + 1]
-        = {LCOAL1, LCOAL2, LCOAL3, LCOAL4, LCOAL5, LCOAL6, DELLN};
-
-    static char *car[LOGOHEIGHT + 1]
-        = {LCAR1, LCAR2, LCAR3, LCAR4, LCAR5, LCAR6, DELLN};
-
-    int i, y, py1 = 0, py2 = 0, py3 = 0;
-
-    if (x < - LOGOLENGTH)  return ERR;
-    y = LINES / 2 - 3;
-
-    if (FLY == 1) {
-        y = (x / 6) + LINES - (COLS / 6) - LOGOHEIGHT;
-        py1 = 2;  py2 = 4;  py3 = 6;
-    }
-    for (i = 0; i <= LOGOHEIGHT; ++i) {
-        my_mvaddstr(y + i, x, sl[(LOGOLENGTH + x) / 3 % LOGOPATTERNS][i]);
-        my_mvaddstr(y + i + py1, x + 21, coal[i]);
-        my_mvaddstr(y + i + py2, x + 42, car[i]);
-        my_mvaddstr(y + i + py3, x + 63, car[i]);
-    }
-    if (ACCIDENT == 1) {
-        add_man(y + 1, x + 14);
-        add_man(y + 1 + py2, x + 45);  add_man(y + 1 + py2, x + 53);
-        add_man(y + 1 + py3, x + 66);  add_man(y + 1 + py3, x + 74);
-    }
-    add_smoke(y - 1, x + LOGOFUNNEL);
-    return OK;
-}
-
 
 int add_D51(int x)
 {
@@ -183,73 +104,13 @@ int add_D51(int x)
     if (x < - D51LENGTH)  return ERR;
     y = LINES / 2 - 5;
 
-    if (FLY == 1) {
-        y = (x / 7) + LINES - (COLS / 7) - D51HEIGHT;
-        dy = 1;
-    }
     for (i = 0; i <= D51HEIGHT; ++i) {
         my_mvaddstr(y + i, x, d51[(D51LENGTH + x) % D51PATTERNS][i]);
         my_mvaddstr(y + i + dy, x + 53, coal[i]);
     }
-    if (ACCIDENT == 1) {
-        add_man(y + 2, x + 43);
-        add_man(y + 2, x + 47);
-    }
-    add_smoke(y - 1, x + D51FUNNEL);
+    // add_smoke(y - 1, x + D51FUNNEL);
     return OK;
 }
-
-int add_C51(int x)
-{
-    static char *c51[C51PATTERNS][C51HEIGHT + 1]
-        = {{C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7,
-            C51WH11, C51WH12, C51WH13, C51WH14, C51DEL},
-           {C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7,
-            C51WH21, C51WH22, C51WH23, C51WH24, C51DEL},
-           {C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7,
-            C51WH31, C51WH32, C51WH33, C51WH34, C51DEL},
-           {C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7,
-            C51WH41, C51WH42, C51WH43, C51WH44, C51DEL},
-           {C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7,
-            C51WH51, C51WH52, C51WH53, C51WH54, C51DEL},
-           {C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7,
-            C51WH61, C51WH62, C51WH63, C51WH64, C51DEL}};
-    static char *coal[C51HEIGHT + 1]
-        = {COALDEL, COAL01, COAL02, COAL03, COAL04, COAL05,
-           COAL06, COAL07, COAL08, COAL09, COAL10, COALDEL};
-
-    int y, i, dy = 0;
-
-    if (x < - C51LENGTH)  return ERR;
-    y = LINES / 2 - 5;
-
-    if (FLY == 1) {
-        y = (x / 7) + LINES - (COLS / 7) - C51HEIGHT;
-        dy = 1;
-    }
-    for (i = 0; i <= C51HEIGHT; ++i) {
-        my_mvaddstr(y + i, x, c51[(C51LENGTH + x) % C51PATTERNS][i]);
-        my_mvaddstr(y + i + dy, x + 55, coal[i]);
-    }
-    if (ACCIDENT == 1) {
-        add_man(y + 3, x + 45);
-        add_man(y + 3, x + 49);
-    }
-    add_smoke(y - 1, x + C51FUNNEL);
-    return OK;
-}
-
-
-void add_man(int y, int x)
-{
-    static char *man[2][2] = {{"", "(O)"}, {"Help!", "\\O/"}};
-    int i;
-
-    for (i = 0; i < 2; ++i) {
-        my_mvaddstr(y + i, x, man[(LOGOLENGTH + x) / 12 % 2][i]);
-    }
-}
-
 
 void add_smoke(int y, int x)
 #define SMOKEPTNS        16
