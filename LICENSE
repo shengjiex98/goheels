@@ -1,3 +1,6 @@
+The program `goheels` is developed based on Toyoda Masashi's `sl`
+program. Linked at [](https://github.com/mtoyoda/sl).
+
 Copyright 1993,1998,2014 Toyoda Masashi (mtoyoda@acm.org)
 
 Everyone is permitted to do anything on this program including copying,

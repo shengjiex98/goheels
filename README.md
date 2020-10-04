@@ -1,10 +1,7 @@
-SL(1): Cure your bad habit of mistyping
-=======================================
+# goheels
 
-SL (Steam Locomotive) runs across your terminal when you type "sl" as
-you meant to type "ls". It's just a joke command, and not useful at
-all.
+An animated ascii art dedicated to the UNC spirit. Go Heels!
 
-Copyright 1993,1998,2014 Toyoda Masashi (mtoyoda@acm.org)
+*Developed based on Toyoda Masashi's `sl` program. [](https://github.com/mtoyoda/sl).*
 
 ![](demo.gif)
